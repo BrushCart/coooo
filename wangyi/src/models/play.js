@@ -26,6 +26,9 @@ export default {
     updateState(state, action){
       //console.log('action...', action);
       return {...state, ...action.payload}
+    },
+    changPlay(state, action) {
+      return
     }
   }
 }
