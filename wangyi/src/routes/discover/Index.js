@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'dva';
 import { Carousel } from 'antd-mobile';
-import { Link } from 'dva/router'
+import { Link } from 'dva/router';
 
 @connect(({discover})=>{
   return discover
@@ -52,7 +52,6 @@ class Index extends React.PureComponent{
           })
         }</div>
       </div>
-      
     </div>)
   }
 }

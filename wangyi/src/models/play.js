@@ -1,17 +1,18 @@
-import { getUrl, getDetail } from '../services/index'
+import { getUrl, getDetail, getLyric } from '../services/index'
 
 export default {
   namespace: 'play',
   state: {
     id: 0,
     url: '',
-    info: {}
+    info: {},
+    lyric: ''  //歌词
   },
   effects: {
     * getUrl({ payload }, {call,put}){
       let response = yield call(getUrl, payload)
       let detail = yield call(getDetail, payload)
-      console.log('datail response',detail)
+      //console.log('datail response',detail)
       let obj = {info:response.data.data[0]}
       obj.id = payload
       obj.url = response.data.data[0].url
@@ -19,6 +20,16 @@ export default {
       yield put({
         type: 'updateState',
         payload: obj
+      })
+    },
+    * getLyric({ payload }, { call, put }){
+      // 获取歌词
+      let lyric = yield call(getLyric, payload);
+      yield put({
+        type: 'updateState',
+        payload: {
+          lyric: lyric.data.lrc.lyric
+        }
       })
     }
   },

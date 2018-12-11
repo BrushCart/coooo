@@ -218,4 +218,33 @@
       }
     }
   }
+  .login{
+    width: 100%;
+    height: 100%;
+    ul{
+      width: 80%;
+      padding: 20px 0;
+      border: 1px solid #ccc;
+      margin: 35px auto;
+      border-radius: 10px;
+      box-sizing: border-box;
+      li{
+        width: 100%;
+        height: 46px;
+        padding-left: 13%;
+        box-sizing: border-box;
+        input{
+          border: 1px solid #ccc;
+          height: 30px;
+          border-radius: 50px;
+          padding-left: 15px;
+        }
+        button{
+          display: block;
+          border: 1px solid #ccc;
+          padding: 5px 10px;
+        }
+      }
+    }
+  }
 }

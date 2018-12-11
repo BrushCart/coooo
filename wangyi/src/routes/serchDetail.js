@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { formatTime } from '../utils/index'
+import Lyric from '../components/Lyric';
+import { formatTime } from '../utils/index';
 
 @connect(({play})=>{
   return play
@@ -11,10 +12,17 @@ import { formatTime } from '../utils/index'
         type: 'play/getUrl',
         payload: id
       })
-    },getDetail: payload=>{
+    },
+    getDetail: payload=>{
       dispatch({
         type: 'play/getDetail',
         payload: payload
+      })
+    },
+    changeLyric: payload=>{
+      dispatch({
+        type: 'play/getLyric',
+        payload
       })
     }
   }
@@ -32,6 +40,15 @@ class SerchDetail extends Component {
     let id = this.props.match.params.id
     this.props.getUrl(id)
   }
+
+  //判断id匹配歌词
+  componentWillReceiveProps(next) {
+    //判断id是否相同，找到相对应的歌词文本
+    if(next.id || this.props.id){
+      this.props.changeLyric(next.id)
+    }
+  }
+
   //返回键
   back() {
     window.history.go(-1)
@@ -76,7 +93,7 @@ class SerchDetail extends Component {
       this.state.isPlay ? this.refs.audio.play() : this.refs.audio.pause()
     })
   }
-
+  //开始拖动
   touchStart() {
     this.setState({
       isPlay: false
@@ -84,7 +101,7 @@ class SerchDetail extends Component {
       this.refs.audio.pause()
     })
   }
-  
+  //拖动时
   touchMove(e) {
     let touch = e.touches[0],
         progressEle = this.refs.progress;
@@ -101,7 +118,7 @@ class SerchDetail extends Component {
       this.refs.audio.currentTime = progress*this.refs.audio.duration
     }) 
   }
-
+  //拖动完毕
   touchEnd() {
     this.setState({
       isPlay: false
@@ -119,8 +136,6 @@ class SerchDetail extends Component {
     if(!this.props.detail){
       return null
     }
-    let pause = "&#xe6a7;"
-    let play = "&#xe60f;"
     return (
       <div className="detail">
         <header className="detailHeader">
@@ -130,6 +145,7 @@ class SerchDetail extends Component {
           </p>
         </header>
         <div className="detailList">
+          <Lyric lyric={this.props.lyric} currentTime={this.refs.audio && this.refs.audio.currentTime} />
           <img className="pic" src={this.props.detail.al.picUrl} alt=""/>
           <div className="proLine"
             onTouchStart={this.touchStart.bind(this)}
