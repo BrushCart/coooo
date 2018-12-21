@@ -25,13 +25,17 @@ class Index extends React.PureComponent{
     this.props.getBanner();
     this.props.getRecommend();
   }
+  click() {
+    console.log(window._hmt)
+    window._hmt.push(['_trackEvent', '网易云音乐', '按钮点击', '搜索按钮']);
+  }
   render(){
     console.log('props..', this.props);
     let {banners,result} = this.props;
     return (<div className="main">
       <header>
         <Link to="#"><i className="icon iconfont">&#xe607;</i></Link>
-        <Link to="/main/serch"><input placeholder="输入想搜索的歌曲" type="text"/></Link>
+        <Link to="/main/serch" onClick={()=>this.click()}><input placeholder="输入想搜索的歌曲" type="text"/></Link>
         <Link to="#"><i className="icon iconfont">&#xe699;</i></Link>
       </header>
       <Carousel infinite={true} autoplay={true}>{

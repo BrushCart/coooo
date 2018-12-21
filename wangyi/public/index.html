@@ -9,5 +9,19 @@
 <body>
   <div id="root"></div>
   <script src="./index.js"></script>
+  <!-- 手机端操控台 -->
+  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+  <script>eruda.init()</script>
+  <!-- 百度统计 -->
+  <script>
+    var _hmt = _hmt || [];
+    window._hmt = _hmt;
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7f38233ca09a6260d8328ab5251e6c51";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>    
 </body>
 </html>
