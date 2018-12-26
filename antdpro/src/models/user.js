@@ -81,6 +81,16 @@ export default {
         list: action.payload,
       };
     },
+    // 修改用户头像
+    changeAvatar(state, action) {
+      let currentUser = {...state.currentUser};
+      currentUser.avatar = action.payload;
+      return {
+        ...state,
+        currentUser
+      }
+    },
+    // 获取当前用户信息
     saveCurrentUser(state, action) {
       console.log('payload...', action.payload);
       let currentUser = {...state.currentUser};

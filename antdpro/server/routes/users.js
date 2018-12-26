@@ -1,11 +1,11 @@
 var express = require('express');
 var query = require('../db.js');
 var router = express.Router();
-var {geneToken, getIdFromToken} = require('../utils/index');
+var {geneToken, getIdFromToken} = require('../utils');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource 11111111111111111111111');
+  res.send('server yuedu response with ok!');
 });
 
 // 登陆功能
@@ -140,6 +140,72 @@ router.get('/currentUser', (req, res)=>{
       }
     }
     console.log('results...', error, result);
+  })
+})
+
+// 更新用户信息
+router.post('/update', function(req, res, next){
+  let uid = getIdFromToken(req.header('X-Token'));
+  req.body.username = req.body.name;
+  delete req.body.name;
+  query('update user set ? where id=?', [req.body, uid], function(error, results, fields){
+    console.log('results...', error, req.body);
+    if (error){
+      res.json({
+        code: -1,
+        msg: error.sqlMessage
+      })
+    }
+    if (results.affectedRows){
+      res.json({
+        code: 1,
+        data: {},
+        msg: '修改用户信息成功'
+      })
+    }else{
+      res.json({
+        code: -2,
+        msg: '修改用户信息失败'
+      })
+    }
+  })
+})
+
+// 发送短信验证码
+router.post('/smsCode', function(req, res, next){
+  const SMSClient = require('@alicloud/sms-sdk')
+  // ACCESS_KEY_ID/ACCESS_KEY_SECRET 根据实际申请的账号信息进行替换
+  const accessKeyId = 'omFtRkaRs3Xu0pTW'
+  const secretAccessKey = 'a8LXFS3hXAU3vbtJqjEQh038j7iTDU'
+  //初始化sms_client
+  let smsClient = new SMSClient({accessKeyId, secretAccessKey})
+  //发送短信
+  smsClient.sendSMS({
+    // '16619932979,18515355836,18811126840,18612262553'
+      PhoneNumbers: req.body.phone,
+      // 必填:待发送手机号。支持以逗号分隔的形式进行批量调用，批量上限为1000个手机号码,批量调用相对于单条调用及时性稍有延迟,验证码类型的短信推荐使用单条调用的方式；发送国际/港澳台消息时，接收号码格式为：国际区号+号码，如“85200000000”
+      SignName: 'jasonandjay',
+      // 必填:短信签名-可在短信控制台中找到
+      TemplateCode: 'SMS_144457028',
+      // 必填:短信模板-可在短信控制台中找到，发送国际/港澳台消息时，请使用国际/港澳台短信模版
+      TemplateParam: `{"code":${Math.floor(Math.random()*99999)+100000}}`
+      // 可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时。
+  }).then(function (response) {
+      let {Code}=response
+      if (Code === 'OK') {
+          //处理返回参数
+          console.log(response)
+          res.json({
+            code: 1,
+            msg: '短信发送成功'
+          })
+      }
+  }, function (err) {
+      console.log(err)
+      res.json({
+        code: -2,
+        msg: err.data && err.data.Message
+      })
   })
 })
 
