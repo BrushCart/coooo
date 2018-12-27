@@ -8,6 +8,58 @@ router.get('/', function(req, res, next) {
   res.send('server yuedu response with ok!');
 });
 
+// 手机号登陆功能
+router.post('/smsLogin', function(req, res, next) {
+  console.log('req...', req.body);
+  query('select user.id as id,phone_code.status as status,phone_code.create_time as create_time,code from user,phone_code where phone_code.phone=user.phone and user.phone = ? order by phone_code.create_time desc limit 1', req.body.phone, function(error, results, fields){
+    if (error){
+      res.json({
+        code: -1,
+        msg: error.sqlMessage
+      })
+    }
+    console.log('results...', results);
+    if (!results[0] || !results[0].create_time){
+      res.json({
+        code: -2,
+        msg: '用户不存在或者没有获取验证码'
+      })
+    }else{
+      if (!results[0].status){
+        res.json({
+          code: -3,
+          msg: '短信验证码已使用过'
+        })
+      }else if ((+new Date()) - results[0].create_time > 5*60*60*1000){
+        res.json({
+          code: -4,
+          msg: '短信验证码已超出有效期'
+        })
+      }else if (results[0].code != req.body.code){
+        res.json({
+          code: -5,
+          msg: '短信验证码不正确'
+        })
+      }else{
+        var token = geneToken(results[0].id);
+        query('update phone_code set status=0 where create_time=?', results[0].create_time, function(error, results, fields){
+          if (error){
+            res.json({
+              code: -6,
+              msg: error.sqlMessage
+            })
+          }else{
+            res.json({
+              code: 1,
+              data: {token},
+              msg: '登陆成功'
+            })
+          }
+        })
+      }
+    }
+  });
+})
 // 登陆功能
 router.post('/login', function(req, res, next) {
   query('select id from user where username=? and password = ?', [req.body.username, req.body.password], function(error, results, fields){
