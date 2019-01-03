@@ -18,7 +18,7 @@ const router = new VueRouter({
 
 // 导航守卫
 router.beforeEach((to, from, next)=>{
-  console.log('1111');
+  console.log('导航守卫');
   next();
 })
 

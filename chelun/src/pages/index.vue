@@ -32,7 +32,7 @@
         </div>
         <div>
             <p>当前驾照签发城市<span class="help"></span></p>
-            <input placeholder="请选择签发地" id="city-picker">
+            <input placeholder="请选择签发地" ref="value" id="city-picker" @click="clickCity">
         </div>
         <div id="ele">
             <p>可补换的签发城市<span class="help"></span></p>
@@ -79,15 +79,53 @@
         </div>
         <div class="masks">
         </div>
+        <van-popup v-model="showCity" position="bottom" :overlay="true">
+        <van-picker show-toolbar
+            title="请选择签发城市"
+            :columns="columns"
+            @cancel="onCancel"
+            @confirm="onConfirm" 
+            @change="onChange" 
+            position="bottom"
+            :overlay="true"
+        />
+        </van-popup>
     </div>
 </template>
 
 <script>
 import Upload from '../components/Upload'
 export default {
-  components: {
-    Upload
-  }
+    data() {
+        return {
+            showCity: false,
+            columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
+            info: {
+                type: '',
+                city: []
+            }
+        }
+    },
+    components: {
+        Upload
+    },
+    methods: {
+        onChange() {
+            
+        },
+        onCancel(){
+            this.showCity = false
+        },
+        onConfirm(){
+            console.log(this.columns)
+            console.log(this.$refs.value)
+            this.$refs.value.value.setColumnValues(1,  this.columns[index].map(item=>item))
+            this.showCity = false;
+        },
+        clickCity(){
+            this.showCity = true;
+        }
+    }
 };
 </script>
 

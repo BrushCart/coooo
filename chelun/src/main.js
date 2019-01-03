@@ -6,8 +6,11 @@ import App from './App'
 import router from '@/router/index'
 // 引入store
 import store from '@/store/index'
+//引入vant
+import { Popup, Picker } from 'vant'
 Vue.config.productionTip = false
-
+Vue.use(Popup);
+Vue.use(Picker);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
