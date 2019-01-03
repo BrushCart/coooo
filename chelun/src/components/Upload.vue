@@ -47,25 +47,19 @@ export default {
     cancel(){
       this.showMask = false;
     },
-    upload(type){
-      // let res = uploadImg(type);
-      uploadImg(type).then(res=>{
-        if (res.code == 0){
-          let src = '';
-          if (/picture.eclicks.cn/.test(res.data.image01)) {
-              src = res.data.image01.replace('http://', '//');
-          } else {
-              src = '//picture.eclicks.cn/' + res.data.image01;
-          }
-          this.updataList({
-            src,
-            index: this.list.findIndex(item=>item==this.current)
-          })
-        }else{
-          alert(res.msg);
-        }
-      })
-      // console.log('res...', res);
+    async upload(type){
+      let res = await uploadImg(type);
+      if (res.result == 1){
+        this.updateList({
+          src: res.data.url,
+          index: this.list.findIndex(item=>item==this.current)
+        })
+        this.showMask = false;
+      }else{
+        alert('上传图片失败');
+      }
+
+      console.log('res...', res);
     }
   }
 }

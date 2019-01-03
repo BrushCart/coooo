@@ -30,7 +30,7 @@ const state = {
 
 const mutations = {
   upadteList(state, payload){
-    state[payload.index].src = payload.src
+    state.list[payload.index].src = payload.src
   }
 }
 
