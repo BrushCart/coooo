@@ -85,9 +85,10 @@
             :columns="columns"
             @cancel="onCancel"
             @confirm="onConfirm" 
-            @change="onChange" 
+            @change="cityChange" 
             position="bottom"
             :overlay="true"
+            ref="cityPicker"
         />
         </van-popup>
     </div>
@@ -95,6 +96,7 @@
 
 <script>
 import Upload from '../components/Upload'
+import {mapState, mapMutations, mapActions} from 'vuex';
 export default {
     data() {
         return {
@@ -109,18 +111,36 @@ export default {
     components: {
         Upload
     },
+    computed: {
+        ...mapState({
+        cityList: state=>state.cityPicker.cityList,
+        costList: state=>state.cityPicker.costList,
+        city: state=>state.cityPicker.city,
+        cost: state=>state.cityPicker.cost
+        })
+    },
     methods: {
-        onChange() {
-            
+        ...mapActions({
+            getCityList: 'cityPicker/getCityList',
+            getCostList: 'cityPicker/getCostList'
+        }),
+        ...mapMutations({
+            updateState: 'cityPicker/updateState'
+        }),
+        cityChange() {
+            // 获取当前省份的下标
+            let index = this.cityList.findIndex(item=>item.name == values[0]);
+            // 调用api更新城市数据
+            this.$refs.cityPicker.setColumnValues(1, this.cityList[index].list.map(item=>item.name));
         },
         onCancel(){
             this.showCity = false
         },
-        onConfirm(){
-            console.log(this.columns)
-            console.log(this.$refs.value)
-            this.$refs.value.value.setColumnValues(1,  this.columns[index].map(item=>item))
-            this.showCity = false;
+        onConfirm(values){
+            console.log('values...', values);
+            // 触发mutation更新城市数据
+            this.updateState({city: values})
+            this.cityCancel()
         },
         clickCity(){
             this.showCity = true;
